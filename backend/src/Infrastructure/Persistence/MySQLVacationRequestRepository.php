@@ -3,10 +3,10 @@
 namespace App\Infrastructure\Persistence;
 
 use App\Domain\Vacation\VacationRequest;
-use App\Shared\Database;
 use App\Domain\Vacation\VacationRequestRepository;
 use App\Domain\Vacation\VacationRequestStatus;
 use App\Infrastructure\Persistence\Mappers\VacationRequestMapper;
+use App\Shared\Database;
 use PDO;
 
 class MySQLVacationRequestRepository implements VacationRequestRepository
@@ -47,7 +47,7 @@ class MySQLVacationRequestRepository implements VacationRequestRepository
         return array_map([VacationRequestMapper::class, 'fromRow'], $rows);
     }
 
-    public function save(VacationRequest $request): void
+    public function save(VacationRequest $request): VacationRequest
     {
         $stmt = $this->pdo->prepare('
             INSERT INTO vacation_requests (from_date, to_date, reason, user_id, status) 
@@ -60,9 +60,12 @@ class MySQLVacationRequestRepository implements VacationRequestRepository
             $request->getEmployee()->getId(),
             $request->getStatus()->value
         ]);
+
+        $request->setId((int) $this->pdo->lastInsertId());
+        return $request;
     }
 
-    public function updateStatus(VacationRequest $request, VacationRequestStatus $status): void
+    public function updateStatus(VacationRequest $request, VacationRequestStatus $status): VacationRequest
     {
         $stmt = $this->pdo->prepare('
             UPDATE vacation_requests
@@ -73,6 +76,7 @@ class MySQLVacationRequestRepository implements VacationRequestRepository
             'status' => $status->value,
             'id' => $request->getId()
         ]);
+        return $request;
     }
 
     public function delete(VacationRequest $request): void
@@ -100,5 +104,23 @@ class MySQLVacationRequestRepository implements VacationRequestRepository
             JOIN users u ON u.id = vr.user_id
             JOIN roles r ON r.id = u.role_id
         ';
+    }
+
+    public function existsOverlappingRequest(VacationRequest $request): bool
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT COUNT(*) FROM vacation_requests
+            WHERE user_id = :user_id
+              AND status IN ("PENDING", "APPROVED")
+              AND from_date <= :to
+              AND to_date >= :from
+        ');
+        $stmt->execute([
+            'user_id' => $request->getEmployee()->getId(),
+            'from'    => $request->getFromDate()->format('Y-m-d'),
+            'to'      => $request->getToDate()->format('Y-m-d'),
+        ]);
+
+        return $stmt->fetchColumn() > 0;
     }
 }

@@ -7,11 +7,11 @@ interface UserRepository
 
     public function findByEmail(string $email): ?User;
 
-    public function save(User $user): void;
+    public function save(User $user): User;
 
     public function all(): array;
 
     public function delete(int $userId): void;
 
-    public function update(User $user): void;
+    public function update(User $user): User;
 }

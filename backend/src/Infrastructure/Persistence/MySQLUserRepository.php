@@ -41,7 +41,7 @@ class MySQLUserRepository implements UserRepository
         return $data ? UserMapper::fromRow($data) : null;
     }
 
-    public function save(User $user): void
+    public function save(User $user): User
     {
         $stmt = $this->pdo->prepare('
             INSERT INTO users (name, email, employee_code, password, role_id) 
@@ -54,6 +54,8 @@ class MySQLUserRepository implements UserRepository
             $user->getPassword(),
             $user->getRole()->getId(),
         ]);
+        $user->setId((int) $this->pdo->lastInsertId());
+        return $user;
     }
 
     public function all(): array
@@ -74,7 +76,7 @@ class MySQLUserRepository implements UserRepository
         $stmt->execute(['id' => $userId]);
     }
 
-    public function update(User $user): void
+    public function update(User $user): User
     {
         $stmt = $this->pdo->prepare('
             UPDATE users
@@ -89,5 +91,6 @@ class MySQLUserRepository implements UserRepository
             'password' => $user->getPassword(),
             'id' => $user->getId(),
         ]);
+        return $user;
     }
 }

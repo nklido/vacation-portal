@@ -1,7 +1,5 @@
 <?php namespace App\Domain\Vacation;
 
-use App\Domain\Vacation\VacationRequest;
-
 interface VacationRequestRepository
 {
 
@@ -10,9 +8,11 @@ interface VacationRequestRepository
 
     public function getByUserId(int $userId): array;
 
-    public function save(VacationRequest $request): void;
+    public function save(VacationRequest $request): VacationRequest;
 
-    public function updateStatus(VacationRequest $request, VacationRequestStatus $status): void;
+    public function updateStatus(VacationRequest $request, VacationRequestStatus $status): VacationRequest;
 
     public function delete(VacationRequest $request): void;
+
+    public function existsOverlappingRequest(VacationRequest $request): bool;
 }
