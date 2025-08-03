@@ -1,0 +1,9 @@
+.idea
+vendor
+
+
+backend/.env
+backend/.phpunit.cache
+backend/.phpunit.result.cache
+backend/build
+backend/phpunit.xml
