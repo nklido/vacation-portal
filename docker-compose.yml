@@ -31,6 +31,23 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - vacation_net
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+    environment:
+      - PROXY_TARGET=http://backend:8000
+      - CHOKIDAR_USEPOLLING=true
+    command: >
+      sh -c "npm install && ng serve --host 0.0.0.0"
+    networks:
+      - vacation_net
 networks:
   vacation_net:
     driver: bridge
