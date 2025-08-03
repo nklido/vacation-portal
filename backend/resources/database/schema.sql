@@ -1,0 +1,40 @@
+
+DROP TABLE IF EXISTS vacation_requests;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS roles;
+
+CREATE TABLE roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    employee_code CHAR(7) NOT NULL UNIQUE,
+    role_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+
+CREATE TABLE vacation_requests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    from_date DATE NOT NULL,
+    to_date DATE NOT NULL,
+    reason TEXT,
+    status ENUM('PENDING', 'APPROVED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+INSERT INTO roles (id, name) VALUES
+(1, 'manager'),
+(2, 'employee');
+
+INSERT INTO users (name, email, password, employee_code, role_id)
+    VALUES ('Test Manager', 'manager@example.com', '$2y$10$Fz7Z4rK4ZGULKcGqLND1SO.d4UM6MR3eUpqSIdS2OQXK0W/RXxvn6', '1234567', 1);
