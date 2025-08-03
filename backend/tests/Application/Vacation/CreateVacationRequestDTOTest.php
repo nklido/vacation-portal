@@ -36,8 +36,8 @@ class CreateVacationRequestDTOTest extends TestCase
         return [
             'multi-day vacation request' => [
                 [
-                    'fromDate' => '2025-08-10',
-                    'toDate' => '2025-08-15',
+                    'from_date' => '2025-08-10',
+                    'to_date' => '2025-08-15',
                     'reason' => 'Family vacation',
                 ],
                 'Family vacation',
@@ -46,8 +46,8 @@ class CreateVacationRequestDTOTest extends TestCase
             ],
             'same-day vacation request' => [
                 [
-                    'fromDate' => '2025-08-10',
-                    'toDate' => '2025-08-10',
+                    'from_date' => '2025-08-10',
+                    'to_date' => '2025-08-10',
                     'reason' => 'Medical appointment',
                 ],
                 'Medical appointment',
@@ -56,8 +56,8 @@ class CreateVacationRequestDTOTest extends TestCase
             ],
             'far future date' => [
                 [
-                    'fromDate' => '2026-01-01',
-                    'toDate' => '2026-01-05',
+                    'from_date' => '2026-01-01',
+                    'to_date' => '2026-01-05',
                     'reason' => 'New Year trip',
                 ],
                 'New Year trip',
@@ -82,7 +82,7 @@ class CreateVacationRequestDTOTest extends TestCase
         return [
             'missing fromDate' => [
                 [
-                    'toDate' => '2025-08-15',
+                    'to_date' => '2025-08-15',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
@@ -90,7 +90,7 @@ class CreateVacationRequestDTOTest extends TestCase
             ],
             'missing toDate' => [
                 [
-                    'fromDate' => '2025-08-10',
+                    'from_date' => '2025-08-10',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
@@ -98,16 +98,16 @@ class CreateVacationRequestDTOTest extends TestCase
             ],
             'missing reason' => [
                 [
-                    'fromDate' => '2025-08-10',
-                    'toDate' => '2025-08-15',
+                    'from_date' => '2025-08-10',
+                    'to_date' => '2025-08-15',
                 ],
                 InvalidArgumentException::class,
                 'Missing reason',
             ],
             'empty reason' => [
                 [
-                    'fromDate' => '2025-08-10',
-                    'toDate' => '2025-08-15',
+                    'from_date' => '2025-08-10',
+                    'to_date' => '2025-08-15',
                     'reason' => '',
                 ],
                 InvalidArgumentException::class,
@@ -115,8 +115,8 @@ class CreateVacationRequestDTOTest extends TestCase
             ],
             'invalid fromDate format (slashes)' => [
                 [
-                    'fromDate' => '2025/08/10',
-                    'toDate' => '2025-08-15',
+                    'from_date' => '2025/08/10',
+                    'to_date' => '2025-08-15',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
@@ -124,8 +124,8 @@ class CreateVacationRequestDTOTest extends TestCase
             ],
             'invalid toDate format (slashes)' => [
                 [
-                    'fromDate' => '2025-08-10',
-                    'toDate' => '2025/08/15',
+                    'from_date' => '2025-08-10',
+                    'to_date' => '2025/08/15',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
@@ -133,8 +133,8 @@ class CreateVacationRequestDTOTest extends TestCase
             ],
             'invalid fromDate (non-existent date)' => [
                 [
-                    'fromDate' => '2025-02-50',
-                    'toDate' => '2025-08-15',
+                    'from_date' => '2025-02-50',
+                    'to_date' => '2025-08-15',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
@@ -142,8 +142,8 @@ class CreateVacationRequestDTOTest extends TestCase
             ],
             'invalid toDate (non-existent date)' => [
                 [
-                    'fromDate' => '2025-08-10',
-                    'toDate' => '2025-04-31',
+                    'from_date' => '2025-08-10',
+                    'to_date' => '2025-04-31',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
@@ -151,8 +151,8 @@ class CreateVacationRequestDTOTest extends TestCase
             ],
             'fromDate in past' => [
                 [
-                    'fromDate' => '2025-08-01',
-                    'toDate' => '2025-08-15',
+                    'from_date' => '2025-08-01',
+                    'to_date' => '2025-08-15',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
@@ -160,8 +160,8 @@ class CreateVacationRequestDTOTest extends TestCase
             ],
             'toDate before fromDate' => [
                 [
-                    'fromDate' => '2025-08-15',
-                    'toDate' => '2025-08-10',
+                    'from_date' => '2025-08-15',
+                    'to_date' => '2025-08-10',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
@@ -169,8 +169,8 @@ class CreateVacationRequestDTOTest extends TestCase
             ],
             'malformed fromDate' => [
                 [
-                    'fromDate' => 'invalid-date',
-                    'toDate' => '2025-08-15',
+                    'from_date' => 'invalid-date',
+                    'to_date' => '2025-08-15',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
