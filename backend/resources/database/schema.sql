@@ -35,6 +35,3 @@ CREATE TABLE vacation_requests (
 INSERT INTO roles (id, name) VALUES
 (1, 'manager'),
 (2, 'employee');
-
-INSERT INTO users (name, email, password, employee_code, role_id)
-    VALUES ('Test Manager', 'manager@example.com', '$2y$10$Fz7Z4rK4ZGULKcGqLND1SO.d4UM6MR3eUpqSIdS2OQXK0W/RXxvn6', '1234567', 1);

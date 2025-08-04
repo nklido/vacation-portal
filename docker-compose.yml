@@ -29,6 +29,8 @@ services:
       MYSQL_DATABASE: vacation
     volumes:
       - db_data:/var/lib/mysql
+      - ./backend/resources/database/schema.sql:/docker-entrypoint-initdb.d/10-schema.sql
+      - ./backend/resources/database/seed.sql:/docker-entrypoint-initdb.d/20-seed.sql
     networks:
       - vacation_net
   frontend:
