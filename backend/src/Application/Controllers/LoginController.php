@@ -36,6 +36,9 @@ class LoginController
         }
 
         $token = $this->tokenService->generateToken($user);
-        return Response::json(['token' => $token]);
+        return Response::json([
+            'token' => $token,
+            'user' => $user->toArray()
+        ]);
     }
 }
