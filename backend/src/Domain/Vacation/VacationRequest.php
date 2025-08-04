@@ -14,6 +14,7 @@ class VacationRequest
     private User $employee;
     private string $reason;
     private VacationRequestStatus $status;
+    private ?DateTime $createdAt;
 
     public function __construct(
         ?int $id,
@@ -21,7 +22,8 @@ class VacationRequest
         DateTime $toDate,
         User $employee,
         string $reason,
-        VacationRequestStatus $status
+        VacationRequestStatus $status,
+        ?DateTime $createdAt = null
     ) {
         $this->id = $id;
         $this->fromDate = $fromDate;
@@ -29,6 +31,7 @@ class VacationRequest
         $this->employee = $employee;
         $this->reason = $reason;
         $this->status = $status;
+        $this->createdAt = $createdAt;
     }
 
     public static function createNew(
@@ -44,6 +47,7 @@ class VacationRequest
             employee: $employee,
             reason: $reason,
             status: VacationRequestStatus::Pending,
+            createdAt: null
         );
     }
 
@@ -82,6 +86,10 @@ class VacationRequest
         return $this->status;
     }
 
+    public function getCreatedAt(): DateTime{
+        return $this->createdAt;
+    }
+
     /** @TODO Count only work days excluding weekends, holidays etc. */
     public function getTotalDays(): int
     {
@@ -103,7 +111,8 @@ class VacationRequest
             'total_days' => $this->getTotalDays(),
             'reason' => $this->reason,
             'employee' => $this->employee->toArray(),
-            'status' => $this->status->value
+            'status' => $this->status->value,
+            'created_at' => $this->createdAt?->format('Y-m-d H:i:s'),
         ];
     }
 }

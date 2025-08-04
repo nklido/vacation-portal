@@ -27,7 +27,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 })
 export class RequestsComponent implements OnInit {
   myRequests: VacationRequest[] = [];
-  displayedColumns: string[] = ['from_date', 'to_date', 'total_days', 'reason', 'status', 'actions'];
+  displayedColumns: string[] = ['created_at', 'from_date', 'to_date', 'total_days', 'reason', 'status', 'actions'];
   loading = false;
   error = '';
 

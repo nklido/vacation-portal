@@ -8,4 +8,5 @@ export interface VacationRequest {
   reason: string;
   employee: User;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  created_at: string;
 }

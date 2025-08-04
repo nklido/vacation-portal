@@ -16,6 +16,11 @@
 
   <table mat-table [dataSource]="myRequests" class="mat-elevation-z2" style="width: 100%;">
 
+    <ng-container matColumnDef="created_at">
+      <th mat-header-cell *matHeaderCellDef> Submitted At </th>
+      <td mat-cell *matCellDef="let request"> {{ request.created_at }} </td>
+    </ng-container>
+
     <ng-container matColumnDef="from_date">
       <th mat-header-cell *matHeaderCellDef> From </th>
       <td mat-cell *matCellDef="let request"> {{ request.from_date }} </td>

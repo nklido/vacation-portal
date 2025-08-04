@@ -15,6 +15,7 @@ class VacationRequestTestFactory
             'employee' => UserTestFactory::employee(1),
             'reason' => 'Annual leave',
             'status' => VacationRequestStatus::Pending,
+            'created_at' => new DateTime(),
         ];
 
         $data = array_merge($defaults, $overrides);
@@ -26,6 +27,7 @@ class VacationRequestTestFactory
             employee: $data['employee'],
             reason: $data['reason'],
             status: $data['status'],
+            createdAt: $data['createdAt']
         );
     }
 }

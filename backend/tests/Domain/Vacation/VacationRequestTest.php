@@ -84,7 +84,8 @@ class VacationRequestTest extends TestCase
             'total_days' => 6,
             'reason' => 'Vacation',
             'employee' => $employee->toArray(),
-            'status' => 'APPROVED'
+            'status' => 'APPROVED',
+            'created_at' => null
         ], $data);
     }
 }

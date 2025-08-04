@@ -35,6 +35,7 @@ class VacationRequestMapper
             employee: $employee,
             reason: $row['reason'],
             status: VacationRequestStatus::from($row['status']),
+            createdAt: DateTime::createFromFormat('Y-m-d H:i:s', $row['created_at'])
         );
     }
 }
