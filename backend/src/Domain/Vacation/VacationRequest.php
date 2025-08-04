@@ -1,6 +1,5 @@
 <?php namespace App\Domain\Vacation;
 
-
 use App\Domain\User\User;
 use DateTime;
 
@@ -86,7 +85,8 @@ class VacationRequest
         return $this->status;
     }
 
-    public function getCreatedAt(): DateTime{
+    public function getCreatedAt(): DateTime
+    {
         return $this->createdAt;
     }
 

@@ -7,3 +7,4 @@ backend/.phpunit.cache
 backend/.phpunit.result.cache
 backend/build
 backend/phpunit.xml
+backend/.php-cs-fixer.cache

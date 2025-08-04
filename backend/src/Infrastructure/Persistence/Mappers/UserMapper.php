@@ -7,9 +7,9 @@ class UserMapper
 {
     public static function fromRow($row): User
     {
-        $role = new Role((int)$row['role_id'], $row['role_name']);
+        $role = new Role((int) $row['role_id'], $row['role_name']);
         return new User(
-            (int)$row['id'],
+            (int) $row['id'],
             $row['name'],
             $row['email'],
             $row['password'],

@@ -117,8 +117,8 @@ class MySQLVacationRequestRepository implements VacationRequestRepository
         ');
         $stmt->execute([
             'user_id' => $request->getEmployee()->getId(),
-            'from'    => $request->getFromDate()->format('Y-m-d'),
-            'to'      => $request->getToDate()->format('Y-m-d'),
+            'from' => $request->getFromDate()->format('Y-m-d'),
+            'to' => $request->getToDate()->format('Y-m-d'),
         ]);
 
         return $stmt->fetchColumn() > 0;

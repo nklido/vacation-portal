@@ -29,7 +29,8 @@ class JsonResponse
             http_response_code($this->status);
             header('Content-Type: application/json; charset=utf-8');
         }
-        if ($this->data !== null)
+        if ($this->data !== null) {
             echo json_encode($this->data);
+        }
     }
 }

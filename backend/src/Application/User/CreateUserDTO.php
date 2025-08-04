@@ -30,7 +30,6 @@ class CreateUserDTO
         Assert::length($data['code'], 7);
         Assert::minLength($data['password'], 6);
 
-
         $dto = new self();
         $dto->name = $data['name'];
         $dto->email = $data['email'];

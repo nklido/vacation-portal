@@ -2,7 +2,6 @@
 
 namespace App\Shared;
 
-
 use App\Domain\Auth\AuthUser;
 
 class Request
@@ -58,7 +57,6 @@ class Request
     {
         self::$authUser = $authUser;
     }
-
 
     public static function setTestJson(array $data): void
     {

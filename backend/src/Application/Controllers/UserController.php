@@ -15,7 +15,8 @@ class UserController
 {
     private UserRepository $userRepository;
 
-    public function __construct(UserRepository $userRepository) {
+    public function __construct(UserRepository $userRepository)
+    {
         $this->userRepository = $userRepository;
     }
 
@@ -46,7 +47,7 @@ class UserController
             $userDto->getEmployeeCode()
         );
         if ($user) {
-            return Response::error("A user with this email or employee code already exists.",422);
+            return Response::error('A user with this email or employee code already exists.', 422);
         }
         $user = User::createNew(
             $userDto->getName(),
@@ -76,9 +77,15 @@ class UserController
             return Response::error('You cannot update a manager user.', 403);
         }
 
-        if ($userDto->getName()) $user->setName($userDto->getName());
-        if ($userDto->getEmail()) $user->setEmail($userDto->getEmail());
-        if ($userDto->getPassword()) $user->setPlainPassword($userDto->getPassword());
+        if ($userDto->getName()) {
+            $user->setName($userDto->getName());
+        }
+        if ($userDto->getEmail()) {
+            $user->setEmail($userDto->getEmail());
+        }
+        if ($userDto->getPassword()) {
+            $user->setPlainPassword($userDto->getPassword());
+        }
         $user = $this->userRepository->update($user);
         return Response::json($user->toArray());
     }

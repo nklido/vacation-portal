@@ -1,0 +1,27 @@
+name: Lint
+
+on:
+  push:
+    branches: [master, '**']
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer
+
+      - name: Install Composer dependencies
+        run: cd ./backend && composer install --prefer-dist --no-progress
+
+      - name: Run PHP-CS-Fixer (dry-run)
+        run: |
+          cd ./backend && composer lint:check

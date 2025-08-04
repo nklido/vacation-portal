@@ -1,6 +1,5 @@
 <?php namespace App\Shared;
 
-
 class Response
 {
     public static function json(mixed $data, int $status = 200): JsonResponse

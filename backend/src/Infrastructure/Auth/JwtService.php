@@ -26,7 +26,8 @@ class JwtService implements TokenService
         $this->clock = $clock;
     }
 
-    public function generateToken(User $user): string {
+    public function generateToken(User $user): string
+    {
         $payload = [
             'iss' => $this->issuer,
             'sub' => $user->getId(),
