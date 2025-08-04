@@ -1,0 +1,30 @@
+<mat-card>
+  <mat-card-title>New Vacation Request</mat-card-title>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" style="display: flex; flex-direction: column; gap: 16px; padding: 42px">
+
+    <mat-form-field appearance="fill">
+      <mat-label>From Date</mat-label>
+      <input matInput [matDatepicker]="picker1" formControlName="from_date" [min]="minDate">
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>To Date</mat-label>
+      <input matInput [matDatepicker]="picker2" formControlName="to_date" [min]="minDate">
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Reason</mat-label>
+      <textarea matInput formControlName="reason" rows="4"></textarea>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+      Submit Request
+    </button>
+
+  </form>
+</mat-card>
