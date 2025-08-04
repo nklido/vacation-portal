@@ -3,6 +3,10 @@
 namespace Application\Controllers;
 
 use App\Application\Controllers\UserController;
+use App\Application\User\Handler\UserStoreHandler;
+use App\Application\User\Handler\UserUpdateHandler;
+use App\Domain\User\Exception\DuplicateUserException;
+use App\Domain\User\Exception\UserNotFoundException;
 use App\Domain\User\User;
 use App\Domain\User\UserRepository;
 use App\Shared\Request;
@@ -13,6 +17,8 @@ use Tests\Support\Factories\UserTestFactory;
 class UserControllerTest extends TestCase
 {
     private UserRepository $userRepository;
+    private UserStoreHandler $userStoreHandler;
+    private UserUpdateHandler $userUpdateHandler;
 
     /**
      * @throws Exception
@@ -21,6 +27,8 @@ class UserControllerTest extends TestCase
     {
         parent::setUp();
         $this->userRepository = $this->createMock(UserRepository::class);
+        $this->userStoreHandler = $this->createMock(UserStoreHandler::class);
+        $this->userUpdateHandler = $this->createMock(UserUpdateHandler::class);
     }
 
     public function tearDown(): void
@@ -31,7 +39,7 @@ class UserControllerTest extends TestCase
 
     public function testIndexReturnsEmptyList() : void
     {
-        $controller = new UserController($this->userRepository);
+        $controller = new UserController($this->userRepository, $this->userStoreHandler, $this->userUpdateHandler);
         $response = $controller->index();
         $this->assertEquals(200, $response->getStatus());
         $this->assertEmpty($response->getData());
@@ -45,7 +53,7 @@ class UserControllerTest extends TestCase
         $jane = UserTestFactory::employee(id: 2, name: 'Jane Doe', email: 'jane@example.com');
 
         $this->userRepository->method('all')->willReturn([$john, $jane]);
-        $controller = new UserController($this->userRepository);
+        $controller = new UserController($this->userRepository, $this->userStoreHandler, $this->userUpdateHandler);
         $response = $controller->index();
 
         $this->assertEquals(200, $response->getStatus());
@@ -59,7 +67,7 @@ class UserControllerTest extends TestCase
     {
         $john = UserTestFactory::employee(id: 1, name: 'John Doe', email: 'john@example.com');
         $this->userRepository->method('findById')->willReturn($john);
-        $controller = new UserController($this->userRepository);
+        $controller = new UserController($this->userRepository, $this->userStoreHandler, $this->userUpdateHandler);
         $response = $controller->get(1);
 
         $this->assertEquals(200, $response->getStatus());
@@ -69,7 +77,7 @@ class UserControllerTest extends TestCase
     public function testGetReturns404IfUserNotFound(): void
     {
         $this->userRepository->method('findById')->willReturn(null);
-        $controller = new UserController($this->userRepository);
+        $controller = new UserController($this->userRepository, $this->userStoreHandler, $this->userUpdateHandler);
         $response = $controller->get(5);
 
         $this->assertEquals(404, $response->getStatus());
@@ -86,25 +94,19 @@ class UserControllerTest extends TestCase
             'code' => '0000001',
         ]);
 
-        $this->userRepository->expects($this->once())
-            ->method('findByEmailOrEmployeeCode')
-            ->with('john@example.com')
-            ->willReturn(null);
-
-        $this->userRepository->expects($this->once())
-            ->method('save')
+        $this->userStoreHandler->expects($this->once())
+            ->method('handle')
             ->willReturn($john);
 
-        $controller = new UserController($this->userRepository);
+        $controller = new UserController($this->userRepository, $this->userStoreHandler, $this->userUpdateHandler);
         $response = $controller->store();
 
-        $this->assertEquals(200, $response->getStatus());
+        $this->assertEquals(201, $response->getStatus());
         $this->assertEquals('John Doe', $response->getData()['name']);
         $this->assertArrayNotHasKey('password', $response->getData());
     }
 
     public function testCreateFailsIfUserAlreadyExists(): void {
-        $john = UserTestFactory::employee(id: 1, name: 'John Doe', email: 'john@example.com', code: '0000001');
         Request::setTestJson([
             'name' => 'John Doe',
             'email' => 'john@example.com',
@@ -112,17 +114,14 @@ class UserControllerTest extends TestCase
             'code' => '0000001',
         ]);
 
-        $this->userRepository->expects($this->once())
-            ->method('findByEmailOrEmployeeCode')
-            ->with('john@example.com', '0000001')
-            ->willReturn($john);
+        $this->userStoreHandler->expects($this->once())
+            ->method('handle')
+            ->willThrowException(new DuplicateUserException('User Already Exists'));
 
-        $this->userRepository->expects($this->never())->method('save');
-
-        $controller = new UserController($this->userRepository);
+        $controller = new UserController($this->userRepository, $this->userStoreHandler, $this->userUpdateHandler);
         $response = $controller->store();
 
-        $this->assertEquals(422, $response->getStatus());
+        $this->assertEquals(409, $response->getStatus());
         $this->assertArrayHasKey('error', $response->getData());
     }
 
@@ -130,10 +129,8 @@ class UserControllerTest extends TestCase
     public function testCreateFailsForInvalidInput($invalidData): void {
         Request::setTestJson($invalidData);
 
-        $this->userRepository->expects($this->never())->method('findByEmail');
-        $this->userRepository->expects($this->never())->method('save');
-
-        $controller = new UserController($this->userRepository);
+        $this->userStoreHandler->expects($this->never())->method('handle');
+        $controller = new UserController($this->userRepository, $this->userStoreHandler, $this->userUpdateHandler);
         $response = $controller->store();
 
         $this->assertEquals(422, $response->getStatus());
@@ -177,44 +174,26 @@ class UserControllerTest extends TestCase
 
     public function testUpdateUserWithValidData(): void
     {
-        $user = UserTestFactory::employee(
-            id: 1,
-            name: 'John Doe',
-            email: 'john@example.com',
-            code: '0000001',
-            password: 'pass123'
-        );
-
+        $userId = 1;
         $updatedUser = UserTestFactory::employee(
-            id: 1,
+            id: $userId,
             name: 'Jane Doe',
             email: 'john@example.com',
             code: '0000001',
             password: 'pass123'
         );
 
-        $userId = 1;
         Request::setTestJson([
             'name' => 'Jane Doe',
             'email'=> 'jane@example.com',
             'password' => 'securePass1!',
         ]);
 
-        $this->userRepository->expects($this->once())
-            ->method('findById')
-            ->with($userId)
-            ->willReturn($user);
-
-        $this->userRepository->expects($this->once())
-            ->method('update')
-            ->with($this->callback(function (User $updatedUser) {
-                return $updatedUser->getName() === 'Jane Doe' &&
-                       $updatedUser->getEmail() === 'jane@example.com' &&
-                       password_verify('securePass1!', $updatedUser->getPassword());
-            }))
+        $this->userUpdateHandler->expects($this->once())
+            ->method('handle')
             ->willReturn($updatedUser);
 
-        $controller = new UserController($this->userRepository);
+        $controller = new UserController($this->userRepository, $this->userStoreHandler, $this->userUpdateHandler);
         $response = $controller->update($userId);
 
         $this->assertEquals(200, $response->getStatus());
@@ -230,15 +209,11 @@ class UserControllerTest extends TestCase
             'password' => 'securePass1!',
         ]);
 
-        $this->userRepository->expects($this->once())
-            ->method('findById')
-            ->with($userId)
-            ->willReturn(null);
+        $this->userUpdateHandler->expects($this->once())
+            ->method('handle')
+            ->willThrowException(new UserNotFoundException('User not found'));
 
-        $this->userRepository->expects($this->never())
-            ->method('update');
-
-        $controller = new UserController($this->userRepository);
+        $controller = new UserController($this->userRepository, $this->userStoreHandler, $this->userUpdateHandler);
         $response = $controller->update($userId);
 
         $this->assertEquals(404, $response->getStatus());
@@ -250,12 +225,8 @@ class UserControllerTest extends TestCase
     {
         $userId = 1;
         Request::setTestJson([]);
-        $this->userRepository->expects($this->never())
-            ->method('findById');
-        $this->userRepository->expects($this->never())
-            ->method('update');
-
-        $controller = new UserController($this->userRepository);
+        $this->userUpdateHandler->expects($this->never())->method('handle');
+        $controller = new UserController($this->userRepository, $this->userStoreHandler, $this->userUpdateHandler);
         $response = $controller->update($userId);
 
         $this->assertEquals(422, $response->getStatus());
@@ -281,7 +252,7 @@ class UserControllerTest extends TestCase
             ->method('delete')
             ->with(1);
 
-        $controller = new UserController($this->userRepository);
+        $controller = new UserController($this->userRepository, $this->userStoreHandler, $this->userUpdateHandler);
         $response = $controller->delete(1);
 
         $this->assertEquals(204, $response->getStatus());
@@ -299,7 +270,7 @@ class UserControllerTest extends TestCase
         $this->userRepository->expects($this->never())
             ->method('delete');
 
-        $controller = new UserController($this->userRepository);
+        $controller = new UserController($this->userRepository, $this->userStoreHandler, $this->userUpdateHandler);
         $response = $controller->delete(1);
 
         $this->assertEquals(404, $response->getStatus());

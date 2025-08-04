@@ -2,7 +2,7 @@
 
 namespace Tests\Application\User;
 
-use App\Application\User\UpdateUserDTO;
+use App\Application\User\DTO\UpdateUserDTO;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

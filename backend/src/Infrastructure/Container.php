@@ -5,6 +5,8 @@ namespace App\Infrastructure;
 use App\Application\Controllers\LoginController;
 use App\Application\Controllers\UserController;
 use App\Application\Controllers\VacationRequestController;
+use App\Application\User\Handler\UserStoreHandler;
+use App\Application\User\Handler\UserUpdateHandler;
 use App\Infrastructure\Auth\JwtService;
 use App\Infrastructure\Persistence\MySQLUserRepository;
 use App\Infrastructure\Persistence\MySQLVacationRequestRepository;
@@ -50,7 +52,9 @@ class Container
     public static function userController(): UserController
     {
         return new UserController(
-            self::userRepository()
+            self::userRepository(),
+            self::userStoreHandler(),
+            self::userUpdateHandler()
         );
     }
 
@@ -58,6 +62,20 @@ class Container
     {
         return new VacationRequestController(
             self::vacationRequestRepository(),
+            self::userRepository()
+        );
+    }
+
+    public static function userStoreHandler(): UserStoreHandler
+    {
+        return new UserStoreHandler(
+            self::userRepository()
+        );
+    }
+
+    public static function userUpdateHandler(): UserUpdateHandler
+    {
+        return new UserUpdateHandler(
             self::userRepository()
         );
     }

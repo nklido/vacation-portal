@@ -1,23 +1,32 @@
 <?php namespace App\Application\Controllers;
 
-use App\Application\User\CreateUserDTO;
-use App\Application\User\UpdateUserDTO;
-use App\Domain\Role\Role;
-use App\Domain\User\User;
+use App\Application\User\DTO\CreateUserDTO;
+use App\Application\User\DTO\UpdateUserDTO;
+use App\Application\User\Handler\UserStoreHandler;
+use App\Application\User\Handler\UserUpdateHandler;
+use App\Domain\Exception\UnauthorizedException;
+use App\Domain\User\Exception\DuplicateUserException;
+use App\Domain\User\Exception\UserNotFoundException;
 use App\Domain\User\UserRepository;
 use App\Shared\JsonResponse;
 use App\Shared\Request;
 use App\Shared\Response;
 use InvalidArgumentException;
 
-// @TODO Refactor domain logic to a separate UserService|User<Action>Handler class
 class UserController
 {
     private UserRepository $userRepository;
+    private UserStoreHandler $userStoreHandler;
+    private UserUpdateHandler $userUpdateHandler;
 
-    public function __construct(UserRepository $userRepository)
-    {
+    public function __construct(
+        UserRepository $userRepository,
+        UserStoreHandler $userStoreHandler,
+        UserUpdateHandler $userUpdateHandler
+    ) {
         $this->userRepository = $userRepository;
+        $this->userStoreHandler = $userStoreHandler;
+        $this->userUpdateHandler = $userUpdateHandler;
     }
 
     public function index(): JsonResponse
@@ -39,62 +48,30 @@ class UserController
     {
         try {
             $userDto = CreateUserDTO::fromRequest(Request::json());
-        } catch (\InvalidArgumentException $exception) {
-            return Response::json(['error' => $exception->getMessage()], 422);
+            $user = $this->userStoreHandler->handle($userDto);
+            return Response::json($user->toArray(), 201);
+        } catch (InvalidArgumentException $exception) {
+            return Response::error($exception->getMessage(), 422);
+        } catch (DuplicateUserException $exception) {
+            return Response::error($exception->getMessage(), 409);
         }
-        $user = $this->userRepository->findByEmailOrEmployeeCode(
-            $userDto->getEmail(),
-            $userDto->getEmployeeCode()
-        );
-        if ($user) {
-            return Response::error('A user with this email or employee code already exists.', 422);
-        }
-        $user = User::createNew(
-            $userDto->getName(),
-            $userDto->getEmail(),
-            $userDto->getPassword(),
-            $userDto->getEmployeeCode(),
-            Role::employee()
-        );
-        $user = $this->userRepository->save($user);
-        return Response::json($user->toArray(), 200);
     }
 
     public function update(int $id): JsonResponse
     {
         try {
             $userDto = UpdateUserDTO::fromRequest(Request::json());
+            $user = $this->userUpdateHandler->handle($id, $userDto);
+            return Response::json($user->toArray());
         } catch (InvalidArgumentException $exception) {
             return Response::json(['error' => $exception->getMessage()], 422);
+        } catch (DuplicateUserException $exception) {
+            return Response::error($exception->getMessage(), 409);
+        } catch (UserNotFoundException $exception) {
+            return Response::error($exception->getMessage(), 404);
+        } catch (UnauthorizedException $e) {
+            return Response::error($e->getMessage(), 403);
         }
-
-        $user = $this->userRepository->findById($id);
-        if (!$user) {
-            return Response::error('User not found', 404);
-        }
-
-        if ($userDto->getEmail()) {
-            $existingUser = $this->userRepository->findByEmail($userDto->getEmail());
-            if ($existingUser && $existingUser->getId() !== $id) {
-                return Response::error('A user with this email already exists.', 422);
-            }
-        }
-
-        if ($user->isManager()) {
-            return Response::error('You cannot update a manager user.', 403);
-        }
-
-        if ($userDto->getName()) {
-            $user->setName($userDto->getName());
-        }
-        if ($userDto->getEmail()) {
-            $user->setEmail($userDto->getEmail());
-        }
-        if ($userDto->getPassword()) {
-            $user->setPlainPassword($userDto->getPassword());
-        }
-        $user = $this->userRepository->update($user);
-        return Response::json($user->toArray());
     }
 
     public function delete(int $id): JsonResponse

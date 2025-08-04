@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\User;
+namespace App\Application\User\DTO;
 
 use Webmozart\Assert\Assert;
 
