@@ -44,6 +44,8 @@ services:
     environment:
       - PROXY_TARGET=http://backend:8000
       - CHOKIDAR_USEPOLLING=true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command: >
       sh -c "npm install && ng serve --host 0.0.0.0"
     networks:
