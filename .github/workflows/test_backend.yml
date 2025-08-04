@@ -1,0 +1,36 @@
+name: Unit Tests & Coverage
+
+on:
+  push:
+    branches: [master, feature/ci]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP 8.3 with Xdebug
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: xdebug
+          ini-values: xdebug.mode=coverage
+          tools: composer
+
+      - name: Install Composer dependencies
+        run: cd ./backend && composer install --prefer-dist --no-progress
+
+      - name: Run unit tests with coverage
+        run: |
+          cd ./backend && composer coverage
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: nklido/vacation-portal
+          files: ./backend/build/logs/clover.xml
