@@ -87,7 +87,7 @@ class UserControllerTest extends TestCase
         ]);
 
         $this->userRepository->expects($this->once())
-            ->method('findByEmail')
+            ->method('findByEmailOrEmployeeCode')
             ->with('john@example.com')
             ->willReturn(null);
 
@@ -113,8 +113,8 @@ class UserControllerTest extends TestCase
         ]);
 
         $this->userRepository->expects($this->once())
-            ->method('findByEmail')
-            ->with('john@example.com')
+            ->method('findByEmailOrEmployeeCode')
+            ->with('john@example.com', '0000001')
             ->willReturn($john);
 
         $this->userRepository->expects($this->never())->method('save');

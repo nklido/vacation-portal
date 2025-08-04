@@ -7,7 +7,7 @@ class User
     private ?int $id;
     private string $name;
     private string $email;
-    private int $code;
+    private string $code;
     private Role $role;
     private string $password;
 
@@ -16,7 +16,7 @@ class User
         string $name,
         string $email,
         string $password,
-        int $code,
+        string $code,
         Role $role
     ) {
         $this->id = $id;
@@ -31,7 +31,7 @@ class User
         string $name,
         string $email,
         string $plainPassword,
-        int $code,
+        string $code,
         Role $role
     ): self {
         return new self(
@@ -80,7 +80,7 @@ class User
         return $this->password;
     }
 
-    public function getCode(): int
+    public function getCode(): string
     {
         return $this->code;
     }

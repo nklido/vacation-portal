@@ -34,7 +34,6 @@ class UserController
         return Response::json($user->toArray());
     }
 
-    // @TODO Should check if user with same employee_code already exists
     public function store(): JsonResponse
     {
         try {
@@ -42,12 +41,13 @@ class UserController
         } catch (\InvalidArgumentException $exception) {
             return Response::json(['error' => $exception->getMessage()], 422);
         }
-
-        $user = $this->userRepository->findByEmail($userDto->getEmail());
+        $user = $this->userRepository->findByEmailOrEmployeeCode(
+            $userDto->getEmail(),
+            $userDto->getEmployeeCode()
+        );
         if ($user) {
-            return Response::json(['error' => "User with '{$user->getEmail()}' already exists"], 422);
+            return Response::error("A user with this email or employee code already exists.",422);
         }
-
         $user = User::createNew(
             $userDto->getName(),
             $userDto->getEmail(),

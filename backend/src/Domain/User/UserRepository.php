@@ -7,6 +7,8 @@ interface UserRepository
 
     public function findByEmail(string $email): ?User;
 
+    public function findByEmailOrEmployeeCode(string $email, string $employeeCode): ?User;
+
     public function save(User $user): User;
 
     public function all(): array;

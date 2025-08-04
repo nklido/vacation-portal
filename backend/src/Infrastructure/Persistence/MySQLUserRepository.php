@@ -41,6 +41,22 @@ class MySQLUserRepository implements UserRepository
         return $data ? UserMapper::fromRow($data) : null;
     }
 
+    public function findByEmailOrEmployeeCode(string $email, string $employeeCode): ?User
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT u.*, r.name AS role_name
+            FROM users u
+            JOIN roles r ON u.role_id = r.id
+            where u.email = :email or u.employee_code = :employee_code
+        ');
+        $stmt->execute([
+            'email' => $email,
+            'employee_code' => $employeeCode
+        ]);
+        $data = $stmt->fetch();
+        return $data ? UserMapper::fromRow($data) : null;
+    }
+
     public function save(User $user): User
     {
         $stmt = $this->pdo->prepare('
