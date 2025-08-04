@@ -41,6 +41,10 @@ class VacationRequestController
 
     public function store(): JsonResponse
     {
+
+        if (AuthContext::roleId() !== Role::EMPLOYEE) {
+            return Response::error('Only employees can create vacation requests.', 403);
+        }
         try {
             $vacationRequestDto = CreateVacationRequestDTO::fromRequest(Request::json());
         } catch (InvalidArgumentException $exception) {

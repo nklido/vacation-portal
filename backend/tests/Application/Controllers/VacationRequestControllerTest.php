@@ -123,6 +123,7 @@ class VacationRequestControllerTest extends TestCase
     }
 
     public function testCreateVacationRequestFailsIfInvalidData(): void {
+        Request::setAuthUser(new AuthUser(1, Role::EMPLOYEE));
         Request::setTestJson([]);
 
         $this->userRepository->expects($this->never())->method('findById');
