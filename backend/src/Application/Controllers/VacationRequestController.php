@@ -14,7 +14,8 @@ use App\Shared\Request;
 use App\Shared\Response;
 use InvalidArgumentException;
 
-// @TODO Refactor domain logic to a separate VacationRequestService|VacationRequest<Action>Handler class
+// @TODO Refactor domain logic to a separate VacationRequest<Action>Handler class
+// @see App\Application\Controllers\UserController
 class VacationRequestController
 {
     private VacationRequestRepository $vacationRequestRepository;
