@@ -73,6 +73,13 @@ class UserController
             return Response::error('User not found', 404);
         }
 
+        if ($userDto->getEmail()) {
+            $existingUser = $this->userRepository->findByEmail($userDto->getEmail());
+            if ($existingUser && $existingUser->getId() !== $id) {
+                return Response::error('A user with this email already exists.', 422);
+            }
+        }
+
         if ($user->isManager()) {
             return Response::error('You cannot update a manager user.', 403);
         }
