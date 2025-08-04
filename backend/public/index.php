@@ -14,7 +14,6 @@ Dotenv\Dotenv::createImmutable(__DIR__ . '/../')->load();
 
 $router = new Router();
 
-
 $router->post('api/login', fn() => dispatch([Container::loginController(), 'login']));
 
 $router->get('/api/users', fn() => dispatch([Container::userController(), 'index']));

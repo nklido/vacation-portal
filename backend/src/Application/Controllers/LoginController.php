@@ -18,7 +18,6 @@ class LoginController
         $this->tokenService = $tokenService;
         $this->userRepository = $userRepository;
     }
-
     public function login(): JsonResponse
     {
         $input = Request::json();

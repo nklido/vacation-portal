@@ -72,6 +72,10 @@ class UserController
             return Response::error('User not found', 404);
         }
 
+        if ($user->isManager()) {
+            return Response::error('You cannot update a manager user.', 403);
+        }
+
         if ($userDto->getName()) $user->setName($userDto->getName());
         if ($userDto->getEmail()) $user->setEmail($userDto->getEmail());
         if ($userDto->getPassword()) $user->setPlainPassword($userDto->getPassword());

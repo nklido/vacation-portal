@@ -109,4 +109,9 @@ class User
     {
         $this->password = password_hash($plainPassword, PASSWORD_BCRYPT);
     }
+
+    public function isManager(): bool
+    {
+        return $this->role->isManager();
+    }
 }
