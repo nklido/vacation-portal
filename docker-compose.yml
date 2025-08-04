@@ -17,6 +17,8 @@ services:
       - DB_PASS=root
     depends_on:
       - database
+    command: >
+      sh -c "[ -f .env ] || cp .env.example .env && composer install && php -S 0.0.0.0:8000 -t public"
     networks:
       - vacation_net
   database:
