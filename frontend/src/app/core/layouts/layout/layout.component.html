@@ -1,0 +1,36 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="toggleSideBar()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>{{ title }}</span>
+  <span class="spacer"></span>
+  <span>
+    {{ user?.name }}
+  </span>
+</mat-toolbar>
+
+<mat-sidenav-container class="container">
+  <mat-sidenav [(opened)]="opened" mode="side">
+    <mat-nav-list>
+      <a *ngFor="let link of navLinks"
+         mat-list-item
+         [routerLink]="link.path"
+         routerLinkActive="active">
+        <mat-icon matListItemIcon>{{ link.icon }}</mat-icon>
+        <span>{{ link.label }}</span>
+      </a>
+    </mat-nav-list>
+
+    <mat-nav-list class="bottom-nav">
+      <a mat-list-item (click)="logout()">
+        <mat-icon matListItemIcon>logout</mat-icon><span matLine>Logout</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="content">
+    <div class="inner-container">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
