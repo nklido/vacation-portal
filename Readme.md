@@ -2,7 +2,7 @@
 
 [![codecov](https://codecov.io/gh/nklido/vacation-portal/graph/badge.svg?token=075DXTPSF1)](https://codecov.io/gh/nklido/vacation-portal)
 
-A backend-focused demo application for managing employee vacation requests, built with PHP 8.3, MariaDB 10.5, and a minimal Angular v18 frontend.
+A backend-focused demo application for managing employee vacation requests, built with PHP 8.3, MariaDB 10.5, and a minimal Angular 19 frontend.
 
 ## Overview
 This project simulates a simple leave management system:
