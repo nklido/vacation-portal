@@ -57,7 +57,7 @@ class VacationRequestTest extends TestCase
             status: VacationRequestStatus::Approved
         );
 
-        $this->assertEquals(4, $request->getTotalDays());
+        $this->assertEquals(5, $request->getTotalDays());
     }
     
     public function testToArrayStructure(): void
@@ -81,7 +81,7 @@ class VacationRequestTest extends TestCase
             'id' => 5,
             'from_date' => '2025-08-10',
             'to_date' => '2025-08-15',
-            'total_days' => 5,
+            'total_days' => 6,
             'reason' => 'Vacation',
             'employee' => $employee->toArray(),
             'status' => 'APPROVED'

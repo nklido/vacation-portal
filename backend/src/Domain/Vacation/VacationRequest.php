@@ -86,7 +86,7 @@ class VacationRequest
     public function getTotalDays(): int
     {
         $interval = $this->fromDate->diff($this->toDate);
-        return $interval->days;
+        return $interval->days + 1;
     }
 
     public function isPending(): bool
