@@ -67,3 +67,10 @@ Time: 00:03.212, Memory: 10.00 MB
 
 OK (68 tests, 167 assertions)
 ```
+
+## 📬 Postman Collection
+
+You can test the API using the included Postman collection:
+
+- [Backend API.postman_collection.json](./backend/resources/Backend%20API.postman_collection.json)
+
