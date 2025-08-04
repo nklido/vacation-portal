@@ -101,8 +101,8 @@ class VacationRequestControllerTest extends TestCase
         ]);
 
         Request::setTestJson([
-            'fromDate' => (new DateTime('+5 days'))->format('Y-m-d'),
-            'toDate' => (new DateTime('+10 days'))->format('Y-m-d'),
+            'from_date' => (new DateTime('+5 days'))->format('Y-m-d'),
+            'to_date' => (new DateTime('+10 days'))->format('Y-m-d'),
             'reason' => 'Annual leave',
         ]);
 
@@ -137,8 +137,8 @@ class VacationRequestControllerTest extends TestCase
     public function testCreateVacationRequestFailsIfUserNotFound(): void {
         Request::setAuthUser(new AuthUser(1, Role::EMPLOYEE));
         Request::setTestJson([
-            'fromDate' => (new DateTime('+5 days'))->format('Y-m-d'),
-            'toDate' => (new DateTime('+10 days'))->format('Y-m-d'),
+            'from_date' => (new DateTime('+5 days'))->format('Y-m-d'),
+            'to_date' => (new DateTime('+10 days'))->format('Y-m-d'),
             'reason' => 'Annual leave',
         ]);
 
@@ -160,8 +160,8 @@ class VacationRequestControllerTest extends TestCase
         Request::setAuthUser(new AuthUser(1, Role::EMPLOYEE));
 
         Request::setTestJson([
-            'fromDate' => (new DateTime('+5 days'))->format('Y-m-d'),
-            'toDate' => (new DateTime('+10 days'))->format('Y-m-d'),
+            'from_date' => (new DateTime('+5 days'))->format('Y-m-d'),
+            'to_date' => (new DateTime('+10 days'))->format('Y-m-d'),
             'reason' => 'Annual leave',
         ]);
 

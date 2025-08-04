@@ -80,21 +80,21 @@ class CreateVacationRequestDTOTest extends TestCase
     public static function invalidInputProvider(): array
     {
         return [
-            'missing fromDate' => [
+            'missing from_date' => [
                 [
                     'to_date' => '2025-08-15',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
-                'Missing fromDate',
+                'Missing from_date',
             ],
-            'missing toDate' => [
+            'missing to_date' => [
                 [
                     'from_date' => '2025-08-10',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
-                'Missing toDate',
+                'Missing to_date',
             ],
             'missing reason' => [
                 [
@@ -113,68 +113,68 @@ class CreateVacationRequestDTOTest extends TestCase
                 InvalidArgumentException::class,
                 'Reason must not be empty',
             ],
-            'invalid fromDate format (slashes)' => [
+            'invalid from_date format (slashes)' => [
                 [
                     'from_date' => '2025/08/10',
                     'to_date' => '2025-08-15',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
-                'Invalid fromDate: must be a valid date in YYYY-MM-DD format.',
+                'Invalid from_date: must be a valid date in YYYY-MM-DD format.',
             ],
-            'invalid toDate format (slashes)' => [
+            'invalid to_date format (slashes)' => [
                 [
                     'from_date' => '2025-08-10',
                     'to_date' => '2025/08/15',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
-                'Invalid toDate: must be a valid date in YYYY-MM-DD format.',
+                'Invalid to_date: must be a valid date in YYYY-MM-DD format.',
             ],
-            'invalid fromDate (non-existent date)' => [
+            'invalid from_date (non-existent date)' => [
                 [
                     'from_date' => '2025-02-50',
                     'to_date' => '2025-08-15',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
-                'Invalid fromDate: must be a valid date in YYYY-MM-DD format.',
+                'Invalid from_date: must be a valid date in YYYY-MM-DD format.',
             ],
-            'invalid toDate (non-existent date)' => [
+            'invalid to_date (non-existent date)' => [
                 [
                     'from_date' => '2025-08-10',
                     'to_date' => '2025-04-31',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
-                'Invalid toDate: must be a valid date in YYYY-MM-DD format.',
+                'Invalid to_date: must be a valid date in YYYY-MM-DD format.',
             ],
-            'fromDate in past' => [
+            'from_date in past' => [
                 [
                     'from_date' => '2025-08-01',
                     'to_date' => '2025-08-15',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
-                'fromDate must be in the future',
+                'from_date must be in the future',
             ],
-            'toDate before fromDate' => [
+            'to_date before from_date' => [
                 [
                     'from_date' => '2025-08-15',
                     'to_date' => '2025-08-10',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
-                'toDate must be after or equal to fromDate',
+                'to_date must be after or equal to from_date',
             ],
-            'malformed fromDate' => [
+            'malformed from_date' => [
                 [
                     'from_date' => 'invalid-date',
                     'to_date' => '2025-08-15',
                     'reason' => 'Family vacation',
                 ],
                 InvalidArgumentException::class,
-                'Invalid fromDate: must be a valid date in YYYY-MM-DD format.',
+                'Invalid from_date: must be a valid date in YYYY-MM-DD format.',
             ],
         ];
     }
