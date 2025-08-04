@@ -85,6 +85,11 @@ class UserController
         if (!$user) {
             return Response::error('User not found', 404);
         }
+
+        if (Request::getAuthUser() && Request::getAuthUser()->id === $id) {
+            return Response::error('You cannot delete your own user.', 400);
+        }
+
         $this->userRepository->delete($id);
         return Response::json(null, 204);
     }
