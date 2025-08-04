@@ -25,9 +25,15 @@ class UpdateUserDTO
             throw new InvalidArgumentException('At least one field must be provided for update.');
         }
 
-        if ($name !== null) Assert::stringNotEmpty($name);
-        if ($email !== null) Assert::email($email);
-        if ($password !== null) Assert::minLength($password, 6);
+        if ($name !== null) {
+            Assert::stringNotEmpty($name);
+        }
+        if ($email !== null) {
+            Assert::email($email);
+        }
+        if ($password !== null) {
+            Assert::minLength($password, 6);
+        }
 
         $dto = new self();
         $dto->name = $name;

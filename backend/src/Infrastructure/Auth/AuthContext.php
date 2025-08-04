@@ -10,7 +10,9 @@ class AuthContext
     private static ?self $instance = null;
     private array $decoded = [];
 
-    private function __construct(private readonly TokenService $tokenService) {}
+    private function __construct(private readonly TokenService $tokenService)
+    {
+    }
 
     public static function getInstance(): self
     {

@@ -22,7 +22,7 @@ class ResponseDispatcher
         } catch (UnauthorizedException $e) {
             Response::error($e->getMessage(), 401)->send();
         } catch (\Throwable $e) {
-            Response::error($e->getMessage() , 500)->send();
+            Response::error($e->getMessage(), 500)->send();
         }
     }
 }

@@ -24,8 +24,7 @@ class VacationRequestController
     public function __construct(
         VacationRequestRepository $vacationRequestRepository,
         UserRepository            $userRepository
-    )
-    {
+    ) {
         $this->vacationRequestRepository = $vacationRequestRepository;
         $this->userRepository = $userRepository;
     }
@@ -36,7 +35,7 @@ class VacationRequestController
             Role::MANAGER => $this->vacationRequestRepository->getPending(),
             Role::EMPLOYEE => $this->vacationRequestRepository->getByUserId(AuthContext::id()),
         };
-        return Response::json(array_map(fn($vacationRequest) => $vacationRequest->toArray(), $vacationRequests));
+        return Response::json(array_map(fn ($vacationRequest) => $vacationRequest->toArray(), $vacationRequests));
     }
 
     public function store(): JsonResponse
