@@ -74,3 +74,6 @@ You can test the API using the included Postman collection:
 
 - [Backend API.postman_collection.json](./backend/resources/Backend%20API.postman_collection.json)
 
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
